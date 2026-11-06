@@ -20,9 +20,11 @@ Most resumes are written from the last resume, so they only ever get shorter and
 
 **6. Get the honest verdict.** Before writing anything, the agent compares the job's requirements with your facts and tells you plainly whether you are a fit. If you are not, it says so, and names the job on the same path that you are a fit for (one level down, a less selective employer, the role that leads to this one). The goal is your next good job, not an application that overclaims. You decide whether to go ahead.
 
-**7. Get the resume.** Say *"write the resume for <job>."* The agent writes `resumes/<job>/resume.md` and builds the PDF next to it. Open the PDF, say what you like and do not like, and it revises. Anything you decide ("keep those two jobs separate," "never call me a founder") is saved to `profile.md` so the next resume starts from your decisions.
+**7. Read and edit the draft.** Say *"write the resume for <job>."* The agent writes `resumes/<job>/resume.md` and opens it in your editor, as plain text, before any PDF exists. Change whatever you want directly in the file, then say *"build."* The agent reads your edits, saves the decisions behind them to `profile.md` so the next resume starts from them, and builds the PDF next to the file.
 
-**8. Repeat step 5 to 7 for every job.** The interviews are shared, so the second resume takes minutes.
+**8. Every build is a version.** Each time the agent builds, it first copies the Markdown to `resumes/<job>/versions/v01.md`, `v02.md`, … and writes a line in `versions/log.md` saying what changed. If you liked an earlier one better, say *"go back to v02"* and it becomes the current resume (as a new version, so nothing is ever lost).
+
+**9. Repeat steps 5 to 8 for every job.** The interviews are shared, so the second resume takes minutes.
 
 ## The folders
 
@@ -32,7 +34,7 @@ Most resumes are written from the last resume, so they only ever get shorter and
 | `interviews/` | One file per job or project: the interview and the facts it produced | The agent, from what you say |
 | `artifacts/` | Your old resume and examples of your work | You drop them in |
 | `targets/` | One file per job you want: the posting, the fit verdict, what happened | The agent, from what you say |
-| `resumes/` | One folder per target with the resume and its PDF; `base/` is the untargeted version | The agent |
+| `resumes/` | One folder per target with the resume, its PDF and a `versions/` history; `base/` is the untargeted version | The agent, then you edit |
 | `_template/`, `docs/`, `AGENTS.md`, `build_resume.py` | The method itself | Already written; do not edit |
 
 ## Your information stays private
@@ -41,7 +43,7 @@ Everything about you (`profile.md`, `interviews/`, `artifacts/`, `targets/`, `re
 
 ## Why not just ask a chatbot?
 
-A chatbot rewrites the resume you paste, so it can only rephrase what you already remembered to write, and it forgets you when you close the window. Here the agent asks first, so the facts include things you never thought to list; it keeps them in files you own and can edit; it refuses to put anything on the resume you did not say; and it tells you when a job is out of reach rather than writing a resume that will not get an interview.
+A chatbot rewrites the resume you paste, so it can only rephrase what you already remembered to write, and it forgets you when you close the window. Here the agent asks first, so the facts include things you never thought to list; it keeps them in files you own and can edit; it refuses to put anything on the resume you did not say; it hands you the text to edit before it makes a PDF, and keeps every version so you can go back; and it tells you when a job is out of reach rather than writing a resume that will not get an interview.
 
 ## More
 

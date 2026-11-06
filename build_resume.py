@@ -8,7 +8,7 @@ Harness layout: one folder per job target, each holding its own resume:
 
 Edit the markdown, then run:
 
-    python3 build_resume.py resumes/<target>/resume.md [--open]
+    python3 build_resume.py resumes/<target>/resume.md [--open] [--snapshot "what changed"]
 
 The PDF lands next to the input, named <Name>_Resume.pdf, where Name is the
 bold name on the first line of the markdown. Use --out to write elsewhere.
@@ -248,6 +248,30 @@ def verify_words(pdf_path: Path, md_text: str) -> list[str]:
     return sorted(w for w in words if w not in extracted and w.replace("-", "") not in squashed)
 
 
+def snapshot(md_path: Path, note: str) -> Path:
+    """Copy the resume Markdown to versions/vNN.md beside it and log the version.
+
+    Versions are files, not git history, because a user's resumes are gitignored.
+    The log (versions/log.md) gets one line per version: number, date, note.
+    """
+    import datetime
+    import shutil
+
+    vdir = md_path.parent / "versions"
+    vdir.mkdir(exist_ok=True)
+    existing = sorted(vdir.glob("v[0-9][0-9].md"))
+    n = int(existing[-1].stem[1:]) + 1 if existing else 1
+    dest = vdir / f"v{n:02d}.md"
+    shutil.copy2(md_path, dest)
+    log = vdir / "log.md"
+    if not log.exists():
+        log.write_text("# Versions\n\nOne line per snapshot. Restore one by copying it over `resume.md` and snapshotting again; a version is never deleted or edited.\n\n", encoding="utf-8")
+    today = datetime.date.today().isoformat()
+    with log.open("a", encoding="utf-8") as f:
+        f.write(f"- v{n:02d} ({today}): {note}\n")
+    return dest
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("md", type=Path, help="path to the resume Markdown file")
@@ -255,6 +279,12 @@ def main() -> int:
         "--out", type=Path, default=None, help="output PDF path (default: <Name>_Resume.pdf beside the input)"
     )
     ap.add_argument("--open", action="store_true", help="open the PDF when done")
+    ap.add_argument(
+        "--snapshot",
+        metavar="NOTE",
+        default=None,
+        help="before building, copy the Markdown to versions/vNN.md beside it and log NOTE",
+    )
     args = ap.parse_args()
 
     if not args.md.exists():
@@ -266,6 +296,10 @@ def main() -> int:
             "of a Chrome or Chromium binary (or install google-chrome, chromium or "
             "chromium-browser on PATH)."
         )
+
+    if args.snapshot:
+        dest = snapshot(args.md, args.snapshot)
+        print(f"snapshot {dest}")
 
     md_text = args.md.read_text(encoding="utf-8")
     name = resume_name(md_text)
