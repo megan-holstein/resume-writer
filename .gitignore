@@ -1,0 +1,10 @@
+# Your professional history stays on your machine. To version it, work in a
+# private fork and delete these lines.
+/profile.md
+/interviews/
+/artifacts/
+/targets/
+/resumes/
+
+.DS_Store
+__pycache__/
