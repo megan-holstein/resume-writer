@@ -20,7 +20,7 @@ Most resumes are written from the last resume, so they only ever get shorter and
 
 **6. Get the honest verdict.** Before writing anything, the agent compares the job's requirements with your facts and tells you plainly whether you are a fit. If you are not, it says so, and names the job on the same path that you are a fit for (one level down, a less selective employer, the role that leads to this one). The goal is your next good job, not an application that overclaims. You decide whether to go ahead.
 
-**7. Read and edit the draft.** Say *"write the resume for <job>."* The agent writes `resumes/<job>/resume.md` and opens it in your editor, as plain text, before any PDF exists. Change whatever you want directly in the file, then say *"build."* The agent reads your edits, saves the decisions behind them to `profile.md` so the next resume starts from them, and builds the PDF next to the file.
+**7. Read and edit the draft.** Say *"write the resume for <job>."* The agent writes `resumes/<job>/resume.md` in two passes, a long draft with every relevant fact and then a cut by a second agent that removes words but never facts, and opens it in your editor, as plain text, before any PDF exists. Change whatever you want directly in the file, then say *"build."* The agent reads your edits, saves the decisions behind them to `profile.md` so the next resume starts from them, and builds the PDF next to the file.
 
 **8. Every build is a version.** Each time the agent builds, it first copies the Markdown to `resumes/<job>/versions/v01.md`, `v02.md`, … and writes a line in `versions/log.md` saying what changed. If you liked an earlier one better, say *"go back to v02"* and it becomes the current resume (as a new version, so nothing is ever lost).
 
