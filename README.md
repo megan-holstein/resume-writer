@@ -1,39 +1,54 @@
 # Resume Writer
 
-A folder of Markdown files and agent instructions that turns your whole professional history into resumes aimed at specific jobs, run inside your own coding agent (any agent that reads `AGENTS.md`). You are interviewed once, in depth, about every role and project you have held; the facts are kept as plain text you can read and correct. Then, for each job you want, the agent writes a resume from those facts and the job's own words, and a script renders it to a two-page PDF that applicant-tracking systems parse cleanly. You never explain your history twice, and no resume contains a claim that is not in your file.
+A folder you open in your coding agent (Claude Code, Codex, Gemini CLI, or any agent that reads `AGENTS.md`). The agent interviews you about your career, keeps what you tell it as plain text files, and writes you a resume for each job you want, with a PDF ready to upload. You need no programming.
 
-## How it works
+## The idea in one paragraph
 
-Three kinds of input and one kind of output.
+Most resumes are written from the last resume, so they only ever get shorter and vaguer. Here the agent first interviews you in depth about every job and project you have had and saves the answers as a list of facts. Then, for each job you apply to, it writes a fresh resume from those facts and from the job posting. Every line on the resume comes from something you actually said. The facts are written once; the resumes are written as many times as you need.
 
-- **`profile.md`**: your contact line, your constraints (a confidential employer, a discreet search) and the framing decisions you have made along the way ("these two roles stay separate", "never list me as a founder"). Every resume reads it.
-- **`interviews/`**: one file per role or project. The agent interviews you using the protocol in `docs/interview-protocol.md`, probing each story for the decision you made, the alternatives you rejected, the scope, the measured result and where AI did part of the work. It records the transcript and a list of standalone facts. This is the fact base every resume is written from.
-- **`artifacts/`**: drop in your current resume, in any format, and the agent uses it to seed the interviews: one file per role it names, every claim marked as unverified, so the first questions have something to push against. Drop in examples of your work too (a deck, a spec, a report, code, a screenshot); the agent reads them and adds what they prove to your interviews.
-- **`targets/`**: one file per job you want, as broad or specific as you know it: a title, a function, a company, or a pasted posting.
-- **`resumes/<target>/`**: the output. One Markdown resume per target, plus its PDF, built from `resumes/base/` (your untargeted resume) by reordering and rewriting for the target. A resume that got a response is recorded on its target so the next one learns from it.
+## What you do, step by step
 
-## Five-minute start
+**1. Set up.** Clone this repository. Install Google Chrome (it renders the PDF) and Python 3 with the `pypdf` package (`pip install pypdf`). Open your coding agent in the folder.
 
-1. Clone this repository, install Google Chrome (the PDF renderer) and Python 3 with `pypdf` (`pip install pypdf`), and open your coding agent in the folder.
-2. Say "set up my profile." The agent copies `_template/profile.md` to `profile.md` and fills it with you.
-3. Drop your current resume into `artifacts/` (or paste it into the chat) and say "seed my interviews from it." Then say "interview me about <employer>." Repeat for every role and project, as many sessions as it takes. Drop work samples into `artifacts/` whenever you have them.
-4. Say "add a target for <job>." Paste the posting if you have one.
-5. Say "write the resume for <target>." The agent first tells you, plainly, how well your facts match the job, and if they do not, which job on the same path they do match: the aim is your next good job, not an application that overclaims. Open `resumes/<target>/<Your_Name>_Resume.pdf`, react, and let the agent revise. Each thing you confirm or reject is written into `profile.md`, so the next resume starts from your decisions.
+**2. Tell the agent who you are.** Say *"set up my profile."* It asks for your contact details and anything it must respect: that you are job-hunting while employed, that an employer is confidential, and so on. This goes in `profile.md`.
 
-## Your history stays on your machine
+**3. Give it your old resume.** Drag your current resume (PDF, Word, anything) into the `artifacts/` folder, or paste it into the chat, and say *"seed my interviews from it."* The agent makes one file per job in `interviews/`, with every claim from your resume marked "unverified." This gives the interview something to start from.
 
-`profile.md`, `interviews/`, `artifacts/`, `targets/` and `resumes/` are in `.gitignore`. The public repository never carries your history, your targets or your resumes. To version them, work in a private fork or clone: make it private first, then delete those lines from `.gitignore`.
+**4. Get interviewed.** Say *"interview me about <employer>."* The agent asks about one job at a time: what was broken, what you decided, what happened, what the numbers were, where you used AI tools. It saves the answers to `interviews/<employer>.md` as you go. Do as many sessions as you like, over days if you want. Drop examples of your work (a deck, a report, a spec) into `artifacts/` and the agent reads them for more facts.
 
-## How it differs from pasting a resume into a chatbot
+**5. Name a job you want.** Say *"add a target for <job>."* It can be as vague as "AI strategy roles at banks" or as exact as a posting you paste in. This goes in `targets/<job>.md`.
 
-A chatbot rewrites the resume you already have, so it can only rephrase what you remembered to put there, and it forgets you when the window closes. The harness interviews you first, so the facts it writes from include the things you never thought to list, and keeps them in files you own. Every bullet traces to a fact you stated, which is the difference between a tailored resume and an invented one, and the agent tells you when a target is out of reach and what is in reach on the same path, instead of writing you a resume for a job you would not get. Your framing decisions accumulate instead of being re-argued in each chat. And the PDF comes from a script that enforces two pages and checks its own text layer, so what the tracking system reads is what you wrote.
+**6. Get the honest verdict.** Before writing anything, the agent compares the job's requirements with your facts and tells you plainly whether you are a fit. If you are not, it says so, and names the job on the same path that you are a fit for (one level down, a less selective employer, the role that leads to this one). The goal is your next good job, not an application that overclaims. You decide whether to go ahead.
 
-## Documents
+**7. Get the resume.** Say *"write the resume for <job>."* The agent writes `resumes/<job>/resume.md` and builds the PDF next to it. Open the PDF, say what you like and do not like, and it revises. Anything you decide ("keep those two jobs separate," "never call me a founder") is saved to `profile.md` so the next resume starts from your decisions.
 
-- [`docs/design.md`](docs/design.md): the design, the decisions behind it and the alternatives rejected.
-- [`docs/positioning.md`](docs/positioning.md): what hiring managers now weight and how the writing rules follow from it, with sources.
+**8. Repeat step 5 to 7 for every job.** The interviews are shared, so the second resume takes minutes.
+
+## The folders
+
+| Folder or file | What goes there | Who writes it |
+|---|---|---|
+| `profile.md` | Your contact line, your constraints, your standing decisions | The agent, from what you say |
+| `interviews/` | One file per job or project: the interview and the facts it produced | The agent, from what you say |
+| `artifacts/` | Your old resume and examples of your work | You drop them in |
+| `targets/` | One file per job you want: the posting, the fit verdict, what happened | The agent, from what you say |
+| `resumes/` | One folder per target with the resume and its PDF; `base/` is the untargeted version | The agent |
+| `_template/`, `docs/`, `AGENTS.md`, `build_resume.py` | The method itself | Already written; do not edit |
+
+## Your information stays private
+
+Everything about you (`profile.md`, `interviews/`, `artifacts/`, `targets/`, `resumes/`) is listed in `.gitignore`, so if you push this repository nothing about you goes with it. If you want your own copy versioned, make a private fork and delete those lines from `.gitignore`.
+
+## Why not just ask a chatbot?
+
+A chatbot rewrites the resume you paste, so it can only rephrase what you already remembered to write, and it forgets you when you close the window. Here the agent asks first, so the facts include things you never thought to list; it keeps them in files you own and can edit; it refuses to put anything on the resume you did not say; and it tells you when a job is out of reach rather than writing a resume that will not get an interview.
+
+## More
+
+- [`docs/positioning.md`](docs/positioning.md): what hiring managers now look for and why the resumes are written the way they are, with sources.
 - [`docs/interview-protocol.md`](docs/interview-protocol.md): how the interview is run.
-- [`AGENTS.md`](AGENTS.md): the rules your coding agent follows.
+- [`docs/design.md`](docs/design.md): the design decisions and the alternatives rejected.
+- [`AGENTS.md`](AGENTS.md): the rules the agent follows.
 
 ## License
 
