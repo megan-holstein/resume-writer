@@ -20,6 +20,7 @@ The user's choice; by default most recent role first, then projects, then earlie
 - Structure each story as **CAR**: the Challenge (what was broken, missing or at risk, and for whom), the Action (what the user decided and did, and the alternatives they rejected), the Result (what changed, measured where possible).
 - Probe every story for: scope (who it served, how many, how often), the decision that was theirs and what it would have cost to decide otherwise, what would have happened without them, who they influenced or aligned and how, the number, and where AI tools or agents did part of the work and what the user kept for human judgment.
 - Ask for the enterprise name of what they did when they describe it in their own words: an intake process is demand management or governance; a merge queue with an admission policy is change control; a workshop series is an enablement program. Record both their words and the standard term.
+- Take the user's word. When they confirm a claim already on a resume, record it and move on; do not ask for its source. Record their opinions in the transcript, and build no question or resume material on an opinion unless they offer it as resume material. Probing is for new stories, not for re-auditing the user.
 - Correct sloppy or private vocabulary plainly; the fact base is written in the profession's language.
 - When the user names an artifact (a deck, a spec, a report), ask them to drop it in `artifacts/`, then read it and add what it proves to **Facts** with the filename.
 
