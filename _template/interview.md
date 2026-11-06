@@ -2,13 +2,17 @@
 
 ## Transcript
 
-Dated. The questions asked and the user's answers, lightly cleaned of filler, their wording kept. Append a new dated session rather than editing an old one.
+Rounds of written questions and answers. The agent appends a round; the user answers under each **A:** in their editor (write `skip` to pass); the agent reads it, extracts facts, and appends the next round. Earlier rounds are never edited.
 
-### <YYYY-MM-DD>
+### Round 1 (YYYY-MM-DD)
 
-**Q:** …
+**Q1:** …
 
-**A:** …
+**A:**
+
+**Q2:** …
+
+**A:**
 
 ## Facts
 

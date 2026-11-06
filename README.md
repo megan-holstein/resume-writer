@@ -14,7 +14,7 @@ Most resumes are written from the last resume, so they only ever get shorter and
 
 **3. Give it your old resume.** Drag your current resume (PDF, Word, anything) into the `artifacts/` folder, or paste it into the chat, and say *"seed my interviews from it."* The agent makes one file per job in `interviews/`, with every claim from your resume marked "unverified." This gives the interview something to start from.
 
-**4. Get interviewed.** Say *"interview me about <employer>."* The agent asks about one job at a time: what was broken, what you decided, what happened, what the numbers were, where you used AI tools. It saves the answers to `interviews/<employer>.md` as you go. Do as many sessions as you like, over days if you want. Drop examples of your work (a deck, a report, a spec) into `artifacts/` and the agent reads them for more facts.
+**4. Get interviewed, in writing.** Say *"interview me about <employer>."* The agent writes five to ten questions into `interviews/<employer>.md`, each with a blank space for your answer, and opens the file. You answer in your editor, in as many words as you like (write `skip` to pass), and tell the agent you are done. It reads your answers, records the facts, and writes the next round of questions: follow-ups on what you said, then new ground. Rounds continue until it has nothing left to ask. Answer when you have time, over days if you want; the file is the record. Drop examples of your work (a deck, a report, a spec) into `artifacts/` and the agent reads them for more facts.
 
 **5. Name a job you want.** Say *"add a target for <job>."* It can be as vague as "AI strategy roles at banks" or as exact as a posting you paste in. This goes in `targets/<job>.md`.
 
