@@ -14,7 +14,7 @@ A second agent, given only `resume.md`, `profile.md` and this file (not the inte
 - **Cut filler.** Articles where the sentence still reads without them; `that`, `which`, `in order to`, `the ability to`, `responsible for`, `a variety of`; hedges (`helped`, `supported`, `worked on`); any clause that restates what a number already says; any adjective doing a number's job.
 - **Compound the phrases.** `measurement of tool usage before and after` becomes `before-and-after usage measurement`; `a process for taking in and reviewing proposals` becomes `intake and investment review`.
 - **One subject per bullet, stated once.** No repeated `I`, no repeated role name, no repeated employer.
-- **Targets:** summary at most 70 words; a bullet at most 30 words, two lines at the roomiest preset; a skills line at most two lines.
+- **Targets:** summary at most 90 words and written as prose (it keeps its articles; bullets may drop theirs); a bullet at most 30 words, two lines at the roomiest preset; a skills line at most two lines.
 - **Do not change meaning.** No stronger verb, no larger scope, no rounding up. `about half` stays `about half`. A fact marked `[generalized]` in the source stays as vague as it is written.
 - **Style stays:** active voice, verb-first bullets, present tense for a current role, past for a past one, no em dashes, no semicolons, colons only before a list.
 - Output the full file, nothing else.
