@@ -48,6 +48,7 @@ A chatbot rewrites the resume you paste, so it can only rephrase what you alread
 ## More
 
 - [`docs/positioning.md`](docs/positioning.md): what hiring managers now look for and why the resumes are written the way they are, with sources.
+- [`docs/style-guide.md`](docs/style-guide.md): the style rules every resume follows (industry terms, no invented phrases, state the good and leave the qualifying to the interview, a number in every bullet, verb-first, no colons).
 - [`docs/interview-protocol.md`](docs/interview-protocol.md): how the interview is run.
 - [`docs/design.md`](docs/design.md): the design decisions and the alternatives rejected.
 - [`AGENTS.md`](AGENTS.md): the rules the agent follows.
