@@ -2,6 +2,10 @@
 
 Dense prose is produced in two passes by two different agents, never in one. The first writes long; the second cuts. One agent doing both in one pass produces the spacious middle: too tidy to be complete, too wordy to be dense.
 
+## The order a resume is developed in
+
+Work from the hardest facts to the most derived section: **education, experience and projects first, then skills, then the summary.** The experience bullets come straight from **Facts** and settle what the person has done. The skills section is derived from them: it lists the practices and tools the settled bullets show, and nothing they do not. The summary is derived from both and is written last, because it can only claim what the page below it supports. Written in the other order, the summary makes promises the bullets then have to be bent to keep, and the skills list fills with terms no bullet backs. This is the usual order, not a lock: a user who edits a section out of turn is not stopped, and when a later change to the bullets unsettles the skills or the summary, recheck them.
+
 ## Pass 1: the expansion draft
 
 A drafting agent writes `resume.md` with no regard for length. For each role it puts in every fact from `interviews/<role>.md` **Facts** that the target's **Scorecard** rewards, in full sentences, with the scope, the decision, the alternative rejected and the result all present. It orders bullets by what the target weights most (`docs/positioning.md`). It follows `docs/style-guide.md` from the start, the industry terms above all. It may run to four pages. Its job is completeness and order; it makes no attempt to be brief.
