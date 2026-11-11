@@ -4,7 +4,7 @@ A folder you open in your coding agent (Claude Code, Codex, Gemini CLI, or any a
 
 ## The idea in one paragraph
 
-Most resumes are written from the last resume, so they only ever get shorter and vaguer. Here the agent first interviews you in depth about every job and project you have had and saves the answers as a list of facts. Then, for each job you apply to, it writes a fresh resume from those facts and from the job posting. Every line on the resume comes from something you actually said. The facts are written once; the resumes are written as many times as you need.
+Most resumes are written from the last resume, so they only ever get shorter and vaguer. Here the agent first interviews you in depth about every job and project you have had and saves the answers as a list of facts. Then, for each job you apply to, it writes a fresh resume from those facts and from the job posting. Getting that detail out of you is the main thing the harness does: the agent comes back with more questions whenever a line could be stronger with a number or a fact it does not have. Every line on the resume comes from something you actually said. The facts are written once; the resumes are written as many times as you need.
 
 ## What you do, step by step
 

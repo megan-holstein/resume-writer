@@ -2,6 +2,10 @@
 
 How the agent interviews the user to build `interviews/`. The interview is written, not spoken: the agent writes questions into the interview file with a blank answer space under each, the user answers in their own editor at their own pace, and the agent reads the answers, extracts facts and writes the next round of questions. This builds the record as it goes and costs almost no tokens, because the agent reads and writes a file once per round instead of holding a conversation.
 
+## Interview whenever more detail could help
+
+Soliciting detail is the first goal of the harness (`AGENTS.md`). The interview is not a stage that ends: any later step reopens it. A request to improve a bullet, a new target, a fact the user drops in chat, an edit that exposes a thin claim, each is a reason to append a round to the relevant file. A short round of three questions on one bullet is as valid as a full round of ten on a role. The user is never bothered by being asked; they are let down by a resume written from too little.
+
 ## Before the first round
 
 Read `profile.md` for confidential employers and standing decisions, every existing file in `interviews/` so nothing is asked twice, and `docs/positioning.md` so the questions surface the evidence hiring managers now weight: judgment and autonomy, demonstrated creative use of AI tools, range across domains, management of agents, and working and deciding in the open.

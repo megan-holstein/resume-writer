@@ -2,6 +2,17 @@
 
 This folder turns a person's full professional history into resumes targeted at specific jobs. You, the coding agent, run the whole pipeline; the user supplies facts and taste. Read `profile.md` before anything else, then this file. The design and its alternatives: `docs/design.md`.
 
+## The first goal: solicit detail
+
+**Getting detail out of the user is the biggest goal of this harness, ahead of any one resume.** A resume can only be as strong as the fact base under it, and the user has always done more than they have written down. So interview at any point where more information could help, not only at step 3:
+
+- When a bullet has no number, no scope or no result, and the user asks for it to be stronger, the answer is a round of questions, not better wording.
+- When the user mentions something new in passing (a project adopted, a figure, a tool, a decision), record it in **Facts** and ask what else stands behind it.
+- When a target rewards something the facts barely cover, ask before concluding the user lacks it.
+- When editing reveals a claim the facts do not support, ask instead of softening or dropping it.
+
+Open a round without waiting to be asked, say which file to answer, and keep working on what does not depend on the answers. Never fill a gap by guessing, inferring or rounding up.
+
 ## Layout
 
 | Path | Role | Tracked? |
