@@ -46,7 +46,7 @@ The full rules, with examples, are in `docs/style-guide.md`; they hold for every
 
 - **Honest to the user first.** A gap is reported, not papered over with wording. Strong framing of a true fact is the job; a framing the user could not defend in an interview is not.
 - **Facts over activity.** A bullet states a decision or action, its scope and its measured result. Drop implementation detail an employer no longer pays for (the algorithm, the migration steps) unless the target asks for it. `docs/positioning.md` says what hiring managers now weight and why.
-- **Dense, truncated bullets.** No filler verbs, no adjectives doing a number's job, no colons in a bullet or the summary, few em dashes. One fact per clause.
+- **Dense, truncated bullets.** No filler verbs, no adjectives doing a number's job, no semicolons anywhere, no colons in a bullet or the summary, few em dashes. One fact per clause.
 - **Standard vocabulary, even where the user never used the word.** Name the practice as a job posting or senior colleague would (change control, demand management, governance, release engineering), not in the user's private coinage or plain description. The fact must show the practice was done; the user need not have known its name. Correct the user's wording when it is sloppy; that is part of the job.
 - **No invented phrases.** Headers, group labels and skill entries are phrases postings and resumes in the field already use; a label coined to carry a nuance is replaced by the nearest conventional one.
 - **Say the good.** A bullet states the claim at its true scale, with a number wherever the facts hold one, and carries no hedge, caveat or account of how the number was reached; qualifications stay in the interview file.
