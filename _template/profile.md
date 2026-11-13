@@ -11,7 +11,7 @@ email ♦ phone ♦ [website](https://example.com) ♦ City, ST
 
 - Is the search discreet (currently employed)? If so, nothing from this folder is published or referenced anywhere public.
 - Confidential employers, if any, and what must stay generalized for each (headcounts, data volumes, system or team names).
-- Page limit (default two; one is the norm for early-career candidates) and any format demands. Agents pass it to the build script as `--pages N`; the script enforces it and ATS-safe output.
+- Format: page limit (default two; one is the norm for early-career candidates), font (default Helvetica; one of arial, calibri, cambria, georgia, helvetica, palatino, times, verdana) and contact-line divider (default ♦; or | · • ◆ ▪). Agents pass them to the build script as `--pages N --font NAME --divider SYM`; the script enforces them and ATS-safe output.
 
 ## Standing framing decisions
 
