@@ -11,7 +11,7 @@ email ♦ phone ♦ [website](https://example.com) ♦ City, ST
 
 - Is the search discreet (currently employed)? If so, nothing from this folder is published or referenced anywhere public.
 - Confidential employers, if any, and what must stay generalized for each (headcounts, data volumes, system or team names).
-- Page limit and any format demands (the build script enforces two pages and ATS-safe output).
+- Page limit (default two; one is the norm for early-career candidates) and any format demands. Agents pass it to the build script as `--pages N`; the script enforces it and ATS-safe output.
 
 ## Standing framing decisions
 

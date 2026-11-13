@@ -8,7 +8,7 @@ Harness layout: one folder per job target, each holding its own resume:
 
 Edit the markdown, then run:
 
-    python3 build_resume.py resumes/<target>/resume.md [--open] [--snapshot "what changed"]
+    python3 build_resume.py resumes/<target>/resume.md [--pages N] [--open] [--snapshot "what changed"]
 
 The PDF lands next to the input, named <Name>_Resume.pdf, where Name is the
 bold name on the first line of the markdown. Use --out to write elsewhere.
@@ -21,7 +21,7 @@ What it does:
      uppercase section headings, ligatures disabled (Helvetica's "fi"
      ligature breaks keyword extraction in strict ATS parsers).
   3. Prints to PDF with headless Chrome (no page header/footer), AUTO-FITTING
-     to TARGET_PAGES: it tries the FIT_STEPS spacing presets from roomiest to
+     to the page limit (--pages, default 2): it tries the FIT_STEPS spacing presets from roomiest to
      tightest and keeps the first render that fits. No manual tuning needed.
   4. Verifies with pypdf: reports page count and checks that every long word
      from the markdown survives text extraction (catches ligature/encoding
@@ -31,7 +31,7 @@ Chrome is found via the RESUME_CHROME environment variable (full path to a
 Chrome or Chromium binary), then the macOS default install, then google-chrome,
 chromium or chromium-browser on PATH.
 
-If even the tightest preset spills past TARGET_PAGES, the tightest render is
+If even the tightest preset spills past the page limit, the tightest render is
 kept and a warning is printed. At that point the fix is trimming content, not
 adding smaller presets — below ~9pt the resume starts to look cramped.
 """
@@ -51,9 +51,9 @@ MAC_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 CHROME_ON_PATH = ("google-chrome", "chromium", "chromium-browser")
 SECTION_NAMES = {"SKILLS", "EXPERIENCE", "PROJECTS", "EDUCATION"}
 
-TARGET_PAGES = 2
+DEFAULT_PAGES = 2
 # (font-size pt, line-height) presets, roomiest first. The build keeps the
-# first one whose render fits TARGET_PAGES.
+# first one whose render fits the page limit.
 FIT_STEPS = [
     (9.5, 1.30),
     (9.4, 1.27),
@@ -272,11 +272,29 @@ def snapshot(md_path: Path, note: str) -> Path:
     return dest
 
 
+def positive_int(value: str) -> int:
+    """argparse type for --pages: an integer of at least 1."""
+    try:
+        n = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not an integer: {value!r}")
+    if n < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1: {n}")
+    return n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("md", type=Path, help="path to the resume Markdown file")
     ap.add_argument(
         "--out", type=Path, default=None, help="output PDF path (default: <Name>_Resume.pdf beside the input)"
+    )
+    ap.add_argument(
+        "--pages",
+        type=positive_int,
+        default=DEFAULT_PAGES,
+        metavar="N",
+        help=f"page limit to auto-fit to (default: {DEFAULT_PAGES}); take it from the page limit in profile.md",
     )
     ap.add_argument("--open", action="store_true", help="open the PDF when done")
     ap.add_argument(
@@ -311,7 +329,7 @@ def main() -> int:
     for body_pt, line_height in FIT_STEPS:
         render_pdf(body_html, body_pt, line_height, out, chrome, title)
         pages = page_count(out)
-        if pages <= TARGET_PAGES:
+        if pages <= args.pages:
             break
 
     missing = verify_words(out, md_text)
@@ -325,9 +343,9 @@ def main() -> int:
         status = 1
     else:
         print("text extraction verified: all long words from the markdown are present")
-    if pages > TARGET_PAGES:
+    if pages > args.pages:
         print(
-            f"WARNING: still {pages} pages even at the tightest preset — "
+            f"WARNING: still {pages} pages (limit {args.pages}) even at the tightest preset — "
             f"trim content in {args.md.name}; do not shrink type further"
         )
         status = 1
