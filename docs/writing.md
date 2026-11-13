@@ -12,9 +12,9 @@ A drafting agent writes `resume.md` with no regard for length. For each role it 
 
 ## Pass 2: the compression pass
 
-A second agent, given only `resume.md`, `profile.md`, `docs/style-guide.md` and this file (not the interviews, so it cannot add), rewrites it to two pages. Its brief:
+A second agent, given only `resume.md`, `profile.md`, `docs/style-guide.md` and this file (not the interviews, so it cannot add), rewrites it to the page limit in `profile.md` (two pages unless it says otherwise). Its brief:
 
-- **Keep every fact, number, name, date and professional term.** Cutting is of words, never of information. If two pages cannot hold every fact, it stops and lists the bullets it would drop, lowest-value first, for the orchestrator to decide; it does not decide alone.
+- **Keep every fact, number, name, date and professional term.** Cutting is of words, never of information. If the page limit cannot hold every fact, it stops and lists the bullets it would drop, lowest-value first, for the orchestrator to decide; it does not decide alone.
 - **Cut filler.** Articles where the sentence still reads without them; `that`, `which`, `in order to`, `the ability to`, `responsible for`, `a variety of`; hedges (`helped`, `supported`, `worked on`); any clause that restates what a number already says; any adjective doing a number's job.
 - **Compound the phrases.** `measurement of tool usage before and after` becomes `before-and-after usage measurement`; `a process for taking in and reviewing proposals` becomes `intake and investment review`.
 - **One subject per bullet, stated once.** No repeated `I`, no repeated role name, no repeated employer.

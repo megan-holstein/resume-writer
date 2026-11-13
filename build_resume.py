@@ -8,7 +8,8 @@ Harness layout: one folder per job target, each holding its own resume:
 
 Edit the markdown, then run:
 
-    python3 build_resume.py resumes/<target>/resume.md [--open] [--snapshot "what changed"]
+    python3 build_resume.py resumes/<target>/resume.md [--pages N] [--font NAME] [--divider SYM]
+                            [--open] [--snapshot "what changed"]
 
 The PDF lands next to the input, named <Name>_Resume.pdf, where Name is the
 bold name on the first line of the markdown. Use --out to write elsewhere.
@@ -17,21 +18,24 @@ What it does:
   1. Parses the markdown structure (name/contact header, summary paragraph,
      SKILLS / EXPERIENCE / PROJECTS / EDUCATION sections, job lines, bullets,
      footnotes, hard line breaks).
-  2. Renders single-column ATS-safe HTML: Helvetica, no tables/images,
-     uppercase section headings, ligatures disabled (Helvetica's "fi"
-     ligature breaks keyword extraction in strict ATS parsers).
+  2. Renders single-column ATS-safe HTML: one font from the FONTS allowlist
+     (--font, default Helvetica), no tables/images, uppercase section
+     headings, ligatures disabled (Helvetica's "fi" ligature breaks keyword
+     extraction in strict ATS parsers). --divider swaps the separator symbol
+     in the contact line (the line under the name) for another.
   3. Prints to PDF with headless Chrome (no page header/footer), AUTO-FITTING
-     to TARGET_PAGES: it tries the FIT_STEPS spacing presets from roomiest to
+     to the page limit (--pages, default 2): it tries the FIT_STEPS spacing presets from roomiest to
      tightest and keeps the first render that fits. No manual tuning needed.
-  4. Verifies with pypdf: reports page count and checks that every long word
+  4. Verifies with pypdf: reports page count, checks that every long word
      from the markdown survives text extraction (catches ligature/encoding
-     regressions).
+     regressions), and warns if the chosen font is not embedded in the PDF
+     (Chrome substituted a fallback because the font is not installed).
 
 Chrome is found via the RESUME_CHROME environment variable (full path to a
 Chrome or Chromium binary), then the macOS default install, then google-chrome,
 chromium or chromium-browser on PATH.
 
-If even the tightest preset spills past TARGET_PAGES, the tightest render is
+If even the tightest preset spills past the page limit, the tightest render is
 kept and a warning is printed. At that point the fix is trimming content, not
 adding smaller presets — below ~9pt the resume starts to look cramped.
 """
@@ -51,9 +55,27 @@ MAC_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 CHROME_ON_PATH = ("google-chrome", "chromium", "chromium-browser")
 SECTION_NAMES = {"SKILLS", "EXPERIENCE", "PROJECTS", "EDUCATION"}
 
-TARGET_PAGES = 2
+DEFAULT_PAGES = 2
+# ATS-safe fonts: common system fonts every parser and recruiter's machine
+# handles. Each maps to (CSS font stack, name prefix expected in the PDF's
+# embedded fonts). Calibri and Cambria ship with Microsoft Office, not macOS;
+# without Office installed Chrome falls back and the build warns.
+FONTS = {
+    "helvetica": ("Helvetica, Arial, sans-serif", "Helvetica"),
+    "arial": ("Arial, Helvetica, sans-serif", "Arial"),
+    "verdana": ("Verdana, Arial, sans-serif", "Verdana"),
+    "calibri": ("Calibri, Carlito, Arial, sans-serif", "Calibri"),
+    "georgia": ("Georgia, 'Times New Roman', serif", "Georgia"),
+    "palatino": ("Palatino, 'Palatino Linotype', 'Book Antiqua', serif", "Palatino"),
+    "cambria": ("Cambria, Caladea, Georgia, serif", "Cambria"),
+    "times": ("'Times New Roman', Times, serif", "Times"),
+}
+DEFAULT_FONT = "helvetica"
+# Separators the contact line may already use; --divider replaces any of them.
+CONTACT_SEPARATORS = "♦|·•◆▪"
+DIVIDERS = ("♦", "|", "·", "•", "◆", "▪")
 # (font-size pt, line-height) presets, roomiest first. The build keeps the
-# first one whose render fits TARGET_PAGES.
+# first one whose render fits the page limit.
 FIT_STEPS = [
     (9.5, 1.30),
     (9.4, 1.27),
@@ -94,12 +116,12 @@ def find_chrome() -> Optional[str]:
     return None
 
 
-def css(body_pt: float, line_height: float) -> str:
+def css(body_pt: float, line_height: float, font_stack: str) -> str:
     return f"""
   @page {{ size: Letter; margin: 0.5in; }}
   * {{ box-sizing: border-box; }}
   body {{
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: {font_stack};
     font-size: {body_pt}pt;
     line-height: {line_height};
     color: #111;
@@ -151,7 +173,7 @@ def paragraph_html(lines: list[str], cls: str) -> str:
     return f"<p{cls_attr}>{''.join(parts)}</p>"
 
 
-def build_body(md_text: str) -> str:
+def build_body(md_text: str, divider: Optional[str] = None) -> str:
     blocks = [b for b in re.split(r"\n\s*\n", md_text) if b.strip()]
     out = []
     section = None
@@ -165,7 +187,11 @@ def build_body(md_text: str) -> str:
             name = re.sub(r"\*", "", lines[0]).strip()
             out.append(f"<h1>{html.escape(name)}</h1>")
             if len(lines) > 1:
-                out.append(paragraph_html(lines[1:], "contact"))
+                contact = lines[1:]
+                if divider:
+                    sep = re.compile(r"\s+[" + re.escape(CONTACT_SEPARATORS) + r"]\s+")
+                    contact = [sep.sub(f" {divider} ", l.rstrip()) + ("  " if l.endswith("  ") else "") for l in contact]
+                out.append(paragraph_html(contact, "contact"))
             continue
 
         m = re.fullmatch(r"\*\*([A-Z &]+)\*\*", first)
@@ -203,11 +229,11 @@ def build_body(md_text: str) -> str:
 
 
 def render_pdf(
-    body_html: str, body_pt: float, line_height: float, out: Path, chrome: str, title: str
+    body_html: str, body_pt: float, line_height: float, out: Path, chrome: str, title: str, font_stack: str
 ) -> None:
     page = (
         "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
-        f"<title>{html.escape(title)}</title><style>{css(body_pt, line_height)}</style></head>"
+        f"<title>{html.escape(title)}</title><style>{css(body_pt, line_height, font_stack)}</style></head>"
         f"<body>\n{body_html}\n</body></html>"
     )
     with tempfile.TemporaryDirectory() as td:
@@ -233,6 +259,19 @@ def page_count(pdf_path: Path) -> int:
     from pypdf import PdfReader
 
     return len(PdfReader(str(pdf_path)).pages)
+
+
+def embedded_fonts(pdf_path: Path) -> set[str]:
+    """Base names of the fonts embedded in the PDF, subset prefixes stripped."""
+    from pypdf import PdfReader
+
+    names = set()
+    for page in PdfReader(str(pdf_path)).pages:
+        fonts = (page.get("/Resources") or {}).get("/Font") or {}
+        for ref in fonts.values():
+            base = str(ref.get_object().get("/BaseFont", ""))
+            names.add(base.lstrip("/").split("+")[-1])
+    return names
 
 
 def verify_words(pdf_path: Path, md_text: str) -> list[str]:
@@ -272,11 +311,43 @@ def snapshot(md_path: Path, note: str) -> Path:
     return dest
 
 
+def positive_int(value: str) -> int:
+    """argparse type for --pages: an integer of at least 1."""
+    try:
+        n = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not an integer: {value!r}")
+    if n < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1: {n}")
+    return n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("md", type=Path, help="path to the resume Markdown file")
     ap.add_argument(
         "--out", type=Path, default=None, help="output PDF path (default: <Name>_Resume.pdf beside the input)"
+    )
+    ap.add_argument(
+        "--pages",
+        type=positive_int,
+        default=DEFAULT_PAGES,
+        metavar="N",
+        help=f"page limit to auto-fit to (default: {DEFAULT_PAGES}); take it from the page limit in profile.md",
+    )
+    ap.add_argument(
+        "--font",
+        choices=sorted(FONTS),
+        default=DEFAULT_FONT,
+        help=f"body font, from an ATS-safe allowlist (default: {DEFAULT_FONT}); take it from profile.md",
+    )
+    ap.add_argument(
+        "--divider",
+        choices=DIVIDERS,
+        default=None,
+        metavar="SYM",
+        help="separator symbol for the contact line, one of " + " ".join(DIVIDERS)
+        + " (default: whatever the Markdown uses); take it from profile.md",
     )
     ap.add_argument("--open", action="store_true", help="open the PDF when done")
     ap.add_argument(
@@ -305,13 +376,14 @@ def main() -> int:
     name = resume_name(md_text)
     title = f"{name} — Resume" if name else "Resume"
     out = args.out if args.out else default_out(args.md, name)
-    body_html = build_body(md_text)
+    body_html = build_body(md_text, args.divider)
+    font_stack, font_prefix = FONTS[args.font]
 
     pages = None
     for body_pt, line_height in FIT_STEPS:
-        render_pdf(body_html, body_pt, line_height, out, chrome, title)
+        render_pdf(body_html, body_pt, line_height, out, chrome, title, font_stack)
         pages = page_count(out)
-        if pages <= TARGET_PAGES:
+        if pages <= args.pages:
             break
 
     missing = verify_words(out, md_text)
@@ -325,9 +397,16 @@ def main() -> int:
         status = 1
     else:
         print("text extraction verified: all long words from the markdown are present")
-    if pages > TARGET_PAGES:
+    fonts = embedded_fonts(out)
+    if not any(f.startswith(font_prefix) for f in fonts):
         print(
-            f"WARNING: still {pages} pages even at the tightest preset — "
+            f"WARNING: font {args.font!r} is not embedded (got {sorted(fonts)}); it is not installed "
+            f"on this machine, so Chrome substituted a fallback"
+        )
+        status = 1
+    if pages > args.pages:
+        print(
+            f"WARNING: still {pages} pages (limit {args.pages}) even at the tightest preset — "
             f"trim content in {args.md.name}; do not shrink type further"
         )
         status = 1
